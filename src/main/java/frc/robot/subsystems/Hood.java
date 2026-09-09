@@ -20,9 +20,11 @@ public class Hood extends SubsystemBase {
 
 	private OverTalonFX m_motor = new OverTalonFX(HoodConstants.motorConfig(), HoodConstants.kMotorID,
 			RobotConstants.rio);
+
 	private MotionMagicVoltage m_motionMagic = new MotionMagicVoltage(Degrees.of(0.0))
 			.withEnableFOC(true)
 			.withSlot(0);
+
 	private Angle m_targetAngle = Degrees.of(0.0);
 
 	/** Creates a new Hood. */
