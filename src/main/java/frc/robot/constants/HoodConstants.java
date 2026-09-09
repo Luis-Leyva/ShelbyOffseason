@@ -1,12 +1,15 @@
 package frc.robot.constants;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.units.measure.Angle;
 
 public class HoodConstants {
 
@@ -17,9 +20,16 @@ public class HoodConstants {
 	public static final double kMaxAngle = 0.0;
 	public static final double kMinAngle = 0.0;
 
+	// Motion Magic
+	public static final double kCruiseVelocity = 0.0;
+	public static final double kAcceleration = 0.0;
+
 	// Device IDs
 	public static final int kMotorID = 0;
 	public static final int kEncoderID = 0;
+
+	// Tolerances
+	public static final Angle kAngleTolerance = Degrees.of(1.0);
 
 	// Motor Config
 	public static TalonFXConfiguration motorConfig() {

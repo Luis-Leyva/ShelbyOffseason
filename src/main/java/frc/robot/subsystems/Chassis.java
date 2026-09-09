@@ -10,6 +10,7 @@ import static edu.wpi.first.units.Units.Kilograms;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.overture.lib.sensors.OverPigeon;
 import com.overture.lib.subsystems.swerve.SwerveChassis;
 import com.overture.lib.subsystems.swerve.SwerveModule;
@@ -21,7 +22,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants.RobotConstants;
 import org.ironmaple.simulation.drivesims.COTS;
 import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
@@ -162,10 +162,6 @@ public class Chassis extends SwerveChassis {
 
   @Override
   public Rotation2d getRotation2d() {
-    // Pigeon2.getYaw() is in DEGREES, unlike TalonFX.getPosition() and
-    // CANcoder.getAbsolutePosition() which are rotations. The C++ built a Rotation2d straight from
-    // GetYaw().GetValue(), which was correct there because the units library carried the
-    // conversion. In Java that is a raw double, so use the built in conversion instead.
     return pigeon.getRotation2d();
   }
 
@@ -180,32 +176,23 @@ public class Chassis extends SwerveChassis {
   }
 
   private static SwerveModuleConfig baseModuleConfig() {
-    SwerveModuleConfig config = new SwerveModuleConfig(driveFeedForward());
+    SwerveModuleConfig config = new SwerveModuleConfig(driveFeedForward(), 0 , 0);
     config.CanBus = RobotConstants.overCANivore;
     config.DriveGearRatio = kDriveGearRatio;
     config.TurnGearRatio = kTurnGearRatio;
     config.WheelDiameter = Units.inchesToMeters(4.0);
-    config.DriveMotorConfig.CurrentLimit = 30.0;
-    config.DriveMotorConfig.TriggerThreshold = 60.0;
-    config.TurnMotorConfig.PIDConfigs.withKP(40).withKS(0.15);
-    // Drive kP is deliberately left at zero. SwerveModule.setState now runs a closed velocity loop,
-    // but at kP = 0 the feedforward alone is in charge, which reproduces the open loop behaviour
-    // this robot ran at Worlds exactly. Raising it is the tuning that unlocks the closed loop; do
-    // that on the robot with data, not blind in a port.
-    config.TurnMotorConfig.Inverted = false;
-    config.DriveMotorConfig.Inverted = false;
+    config.DriveMotorConfig.CurrentLimits.SupplyCurrentLowerLimit = 30.0;
+    config.DriveMotorConfig.CurrentLimits.SupplyCurrentLimit = 60.0;
+    config.TurnMotorConfig.Slot0.withKP(40).withKS(0.15);
+    config.TurnMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    config.DriveMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     return config;
   }
 
-  // The C++ zeroed the CANcoder offsets off the roboRIO with #ifndef __FRC_ROBORIO__, because the
-  // simulated encoders reported raw. SwerveModule now hands Phoenix the same offset through
-  // CANcoderSimState.SensorOffset, so simulation runs the real calibration like the robot does and
-  // the sim/real split is gone.
-
   private static SwerveModuleConfig frontRightConfig() {
     SwerveModuleConfig config = baseModuleConfig();
-    config.DriveMotorConfig.MotorId = 2;
-    config.TurnMotorConfig.MotorId = 1;
+    config.driveMotorId = 2;
+    config.turnMotorId = 1;
     config.EncoderConfig.CanCoderId = 9;
     config.EncoderConfig.Offset = 0.464111328125;
     config.ModuleName = "Front Right";
@@ -214,8 +201,8 @@ public class Chassis extends SwerveChassis {
 
   private static SwerveModuleConfig backRightConfig() {
     SwerveModuleConfig config = baseModuleConfig();
-    config.DriveMotorConfig.MotorId = 4;
-    config.TurnMotorConfig.MotorId = 3;
+    config.driveMotorId = 4;
+    config.turnMotorId = 3;
     config.EncoderConfig.CanCoderId = 12;
     config.EncoderConfig.Offset = 0.352294921875;
     config.ModuleName = "Back Right";
@@ -224,8 +211,8 @@ public class Chassis extends SwerveChassis {
 
   private static SwerveModuleConfig frontLeftConfig() {
     SwerveModuleConfig config = baseModuleConfig();
-    config.DriveMotorConfig.MotorId = 6;
-    config.TurnMotorConfig.MotorId = 5;
+    config.driveMotorId = 6;
+    config.turnMotorId = 5;
     config.EncoderConfig.CanCoderId = 10;
     config.EncoderConfig.Offset = -0.12255859375;
     config.ModuleName = "Front Left";
@@ -234,12 +221,9 @@ public class Chassis extends SwerveChassis {
 
   private static SwerveModuleConfig backLeftConfig() {
     SwerveModuleConfig config = baseModuleConfig();
-    config.DriveMotorConfig.MotorId = 8;
-    config.TurnMotorConfig.MotorId = 7;
+    config.driveMotorId = 8;
+    config.turnMotorId = 7;
     config.EncoderConfig.CanCoderId = 11;
-    // Only this module ramps. Carried over from the C++ as-is; the asymmetry looks unintentional
-    // but it is real configuration, so changing it is a decision for the robot, not the port.
-    config.DriveMotorConfig.OpenLoopRampRate = 0.01;
     config.EncoderConfig.Offset = -0.383056640625;
     config.ModuleName = "Back Left";
     return config;
