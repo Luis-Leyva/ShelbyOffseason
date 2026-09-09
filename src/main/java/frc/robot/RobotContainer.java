@@ -1,0 +1,45 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot;
+
+import com.overture.lib.gamepads.OverXboxController;
+import com.overture.lib.robots.OverContainer;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.commands.DriveCommand;
+import frc.robot.subsystems.Chassis;
+
+public class RobotContainer implements OverContainer {
+
+	// Subsystems
+	public final Chassis chassis = new Chassis();
+
+	// Controllers
+	private final OverXboxController driver = new OverXboxController(0, 0.20, 0.2);
+
+	public RobotContainer() {
+		configDriverBindings();
+	}
+
+	public Command getAutonomousCommand() {
+		return Commands.print("No autonomous command configured");
+	}
+
+	@Override
+	public void configDriverBindings() {
+		chassis.setDefaultCommand(new DriveCommand(chassis, driver));
+		driver.back().onTrue(chassis.resetHeadingCommand());
+	}
+
+	@Override
+	public void configOperatorBindings() {}
+
+	@Override
+	public void configCharacterizationBindings() {}
+
+	@Override
+	public void updateTelemetry() {}
+}
