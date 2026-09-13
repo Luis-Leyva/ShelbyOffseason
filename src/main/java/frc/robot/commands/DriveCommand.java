@@ -12,7 +12,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.chassis.Chassis;
 
 /** Port of the C++ DriveCommand: the default teleop drive. */
 public class DriveCommand extends Command {
@@ -20,8 +20,9 @@ public class DriveCommand extends Command {
 	private final OverXboxController gamepad;
 
 	// Heading control is disabled for now
-	// private final ProfiledPIDController headingController = new ProfiledPIDController(
-	// 		4.75, 0.0, 0.15, new TrapezoidProfile.Constraints(13.0, 18.0 * 2));
+	// private final ProfiledPIDController headingController = new
+	// ProfiledPIDController(
+	// 4.75, 0.0, 0.15, new TrapezoidProfile.Constraints(13.0, 18.0 * 2));
 
 	// Stick-driven heading control
 	// private final HeadingSpeedsHelper headingSpeedsHelper;
@@ -49,7 +50,8 @@ public class DriveCommand extends Command {
 		this.chassis = chassis;
 		this.gamepad = gamepad;
 		// Stick-driven heading control
-		// this.headingSpeedsHelper = new HeadingSpeedsHelper(headingController, chassis);
+		// this.headingSpeedsHelper = new HeadingSpeedsHelper(headingController,
+		// chassis);
 
 		addRequirements(chassis);
 	}

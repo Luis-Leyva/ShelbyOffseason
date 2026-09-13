@@ -10,7 +10,7 @@ import com.overture.lib.robots.OverContainer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.DriveCommand;
-import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.chassis.Chassis;
 
 public class RobotContainer implements OverContainer {
 
@@ -35,11 +35,14 @@ public class RobotContainer implements OverContainer {
 	}
 
 	@Override
-	public void configOperatorBindings() {}
+	public void configOperatorBindings() {
+	}
 
 	@Override
-	public void configCharacterizationBindings() {}
+	public void configCharacterizationBindings() {
+	}
 
 	@Override
-	public void updateTelemetry() {}
+	public void updateTelemetry() {
+	}
 }

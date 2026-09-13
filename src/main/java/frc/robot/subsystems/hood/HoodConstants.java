@@ -1,13 +1,10 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
-package frc.robot.constants;
+package frc.robot.subsystems.hood;
 
 import static edu.wpi.first.units.Units.Degrees;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -15,8 +12,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.Angle;
 
-/** Add your docs here. */
-public class IntakeConstants {
+public class HoodConstants {
+
 	// Gear Ratio
 	public static final double kGearRatio = 0.0;
 
@@ -30,13 +27,12 @@ public class IntakeConstants {
 
 	// Device IDs
 	public static final int kMotorID = 0;
-	public static final int kEncoderID = 0;
 
 	// Tolerances
 	public static final Angle kAngleTolerance = Degrees.of(1.0);
 
 	// Motor Config
-	public static TalonFXConfiguration intakeMotorConfig() {
+	public static TalonFXConfiguration motorConfig() {
 		return new TalonFXConfiguration()
 				.withCurrentLimits(
 						new CurrentLimitsConfigs()
@@ -53,7 +49,10 @@ public class IntakeConstants {
 				.withMotorOutput(
 						new MotorOutputConfigs()
 								.withInverted(InvertedValue.CounterClockwise_Positive)
-								.withNeutralMode(NeutralModeValue.Brake));
+								.withNeutralMode(NeutralModeValue.Brake))
+				.withSlot0(
+						new Slot0Configs()
+								.withKP(0.0));
 	}
 
 }
