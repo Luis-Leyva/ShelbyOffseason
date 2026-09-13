@@ -28,12 +28,14 @@ public class Hood extends SubsystemBase {
 
 	/** Creates a new Hood. */
 	public Hood() {
-		m_motor.setSensorToMechanism(HoodConstants.kGearRatio);
-		m_motor.configureMotionMagic(HoodConstants.kCruiseVelocity, HoodConstants.kAcceleration, 0.00);
+	}
+
+	public Angle getError() {
+		return m_targetAngle.minus(m_motor.getPosition().getValue());
 	}
 
 	public boolean isAtTarget() {
-		return m_motor.getPosition().getValue().minus(m_targetAngle).lte(HoodConstants.kAngleTolerance);
+		return getError().abs(Degrees) < HoodConstants.kAngleTolerance.in(Degrees);
 	}
 
 	public Command setAngle(Angle angle) {
@@ -50,7 +52,8 @@ public class Hood extends SubsystemBase {
 		SmartDashboard.putNumber("Hood/CurrentAngle", getAngle().in(Degrees));
 		SmartDashboard.putNumber("Hood/TargetAngle", m_targetAngle.in(Degrees));
 		SmartDashboard.putBoolean("Hood/AtTarget", isAtTarget());
-		SmartDashboard.putNumber("Hood/Error", m_motor.getPosition().getValue().minus(m_targetAngle).in(Degrees));
+		SmartDashboard.putNumber("Hood/Error", m_motor.getClosedLoopError().getValueAsDouble() * 360.0);
+		SmartDashboard.putNumber("Hood/TargetAngle", m_motor.getPosition().getValue().in(Degrees));
 	}
 
 	@Override

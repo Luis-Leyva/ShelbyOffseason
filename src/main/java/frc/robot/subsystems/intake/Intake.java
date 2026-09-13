@@ -6,8 +6,7 @@ package frc.robot.subsystems.intake;
 
 import static edu.wpi.first.units.Units.*;
 
-import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.overture.lib.motorcontrollers.OverTalonFX;
 import com.overture.lib.sensors.OverCANCoder;
 
@@ -18,65 +17,50 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotConstants;
 
 public class Intake extends SubsystemBase {
-	/** Creates a new Shooter. */
 
 	// Devices
-	private OverTalonFX testMotor = new OverTalonFX(IntakeConstants.motorConfig(), IntakeConstants.SHOOTER_MOTOR_ID,
+	private OverTalonFX m_motor = new OverTalonFX(IntakeConstants.motorConfig(), IntakeConstants.kMotorID,
 			RobotConstants.rio);
-	private OverCANCoder testEncoder = new OverCANCoder(IntakeConstants.encoderConfig(), RobotConstants.rio);
+	private OverCANCoder m_encoder = new OverCANCoder(IntakeConstants.encoderConfig(), RobotConstants.rio);
 
 	// Motor Outputs
-	private VoltageOut shooterVoltage = new VoltageOut(0.0);
-	private PositionVoltage shooterPositionVoltage = new PositionVoltage(0.0);
+	private MotionMagicVoltage m_motionMagic = new MotionMagicVoltage(Degrees.of(0.0))
+			.withEnableFOC(true)
+			.withSlot(0);
 
-	private Angle targetPosition = Degrees.of(0.0);
+	private Angle m_targetAngle = Degrees.of(0.0);
 
 	public Intake() {
-
-	}
-
-	public Command setVoltage(double voltage) {
-		return runOnce(() -> {
-			testMotor.setControl(shooterVoltage.withEnableFOC(false).withOutput(voltage));
-		});
-	}
-
-	public Command setPosition(Angle position) {
-		return runOnce(() -> {
-			targetPosition = position;
-			testMotor.setControl(shooterPositionVoltage.withEnableFOC(false).withPosition(targetPosition).withSlot(0)
-					.withFeedForward(0.1));
-		}).until((() -> isAtTarget()));
 	}
 
 	public Angle getError() {
-		return targetPosition.minus(getEncoderAbsolutePosition());
+		return m_targetAngle.minus(getEncoderAbsolutePosition());
 	}
 
 	public boolean isAtTarget() {
-		return getError().abs(Degrees) < IntakeConstants.POSITION_TOLERANCE.in(Degrees);
+		return getError().abs(Degrees) < IntakeConstants.kAngleTolerance.in(Degrees);
 	}
 
-	public double getVelocity() {
-		return testMotor.getRotorVelocity().getValueAsDouble();
+	public Command setAngle(Angle angle) {
+		return run(() -> m_motor.setControl(m_motionMagic.withPosition(m_targetAngle)))
+				.beforeStarting(() -> m_targetAngle = angle)
+				.until((() -> isAtTarget()));
 	}
 
 	public Angle getMotorPosition() {
-		return testMotor.getPosition().getValue();
+		return m_motor.getPosition().getValue();
 	}
 
 	public Angle getEncoderAbsolutePosition() {
-		return testEncoder.getAbsolutePosition().getValue();
+		return m_encoder.getAbsolutePosition().getValue();
 	}
 
 	public void updateTelemetry() {
-		// SmartDashboard.putNumber("Shooter Velocity", getVelocity());
-		SmartDashboard.putNumber("Motor/Position/Degrees", getMotorPosition().in(Degrees));
-		SmartDashboard.putNumber("Motor/Position/Error/Degrees", getError().abs(Degrees));
-		SmartDashboard.putBoolean("Motor/Position/AtTarget", isAtTarget());
-		SmartDashboard.putNumber("Encoder/AbsolutePosition/Degrees", getEncoderAbsolutePosition().in(Degrees));
-		SmartDashboard.putNumber("Target/Position/Degrees", targetPosition.in(Degrees));
-		SmartDashboard.putNumber("Test", IntakeConstants.POSITION_TOLERANCE.baseUnitMagnitude());
+		SmartDashboard.putNumber("Intake/MotorAngle", getMotorPosition().in(Degrees));
+		SmartDashboard.putNumber("Intake/Error", getError().abs(Degrees));
+		SmartDashboard.putBoolean("Intake/AtTarget", isAtTarget());
+		SmartDashboard.putNumber("Intake/EncoderAngle", getEncoderAbsolutePosition().in(Degrees));
+		SmartDashboard.putNumber("Intake/TargetAngle", m_targetAngle.in(Degrees));
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.Degrees;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -17,10 +18,18 @@ import com.overture.lib.sensors.CanCoderConfig;
 import edu.wpi.first.units.measure.Angle;
 
 public class IntakeConstants {
-	public static final int SHOOTER_MOTOR_ID = 22;
-	public static final int SHOOTER_ENCODER_ID = 21;
-	public static final Angle POSITION_TOLERANCE = Degrees.of(3.0);
-	public static final double GEAR_RATIO = (30.0 / 35.0);
+
+	// Gear Ratio
+	public static final double kGearRatio = (0.0 / 0.0);
+
+	// Motion Magic
+	public static final double kCruiseVelocity = 0.0;
+	public static final double kAcceleration = 0.0;
+
+	// Device IDs
+	public static final int kMotorID = 0;
+	public static final int kEncoderID = 0;
+	public static final Angle kAngleTolerance = Degrees.of(0.0);
 
 	// Motor Config
 	public static TalonFXConfiguration motorConfig() {
@@ -46,17 +55,20 @@ public class IntakeConstants {
 								.withKP(0.0)
 								.withKD(0.0))
 				.withFeedback(new FeedbackConfigs()
-						.withFeedbackRemoteSensorID(SHOOTER_ENCODER_ID)
+						.withFeedbackRemoteSensorID(kEncoderID)
 						.withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
 						.withSensorToMechanismRatio(1.0)
-						.withRotorToSensorRatio(GEAR_RATIO));
+						.withRotorToSensorRatio(kGearRatio))
+				.withMotionMagic(new MotionMagicConfigs()
+						.withMotionMagicCruiseVelocity(kCruiseVelocity)
+						.withMotionMagicAcceleration(kAcceleration));
 	}
 
 	// Encoder Config
 	public static CanCoderConfig encoderConfig() {
 		CanCoderConfig config = new CanCoderConfig();
 
-		config.CanCoderId = SHOOTER_ENCODER_ID;
+		config.CanCoderId = IntakeConstants.kEncoderID;
 		config.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 
 		return config;

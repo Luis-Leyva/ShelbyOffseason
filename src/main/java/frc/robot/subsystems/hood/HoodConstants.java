@@ -3,6 +3,8 @@ package frc.robot.subsystems.hood;
 import static edu.wpi.first.units.Units.Degrees;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -16,10 +18,6 @@ public class HoodConstants {
 
 	// Gear Ratio
 	public static final double kGearRatio = 0.0;
-
-	// Limits
-	public static final double kMaxAngle = 0.0;
-	public static final double kMinAngle = 0.0;
 
 	// Motion Magic
 	public static final double kCruiseVelocity = 0.0;
@@ -52,7 +50,12 @@ public class HoodConstants {
 								.withNeutralMode(NeutralModeValue.Brake))
 				.withSlot0(
 						new Slot0Configs()
-								.withKP(0.0));
+								.withKP(0.0))
+				.withFeedback(new FeedbackConfigs()
+						.withSensorToMechanismRatio(kGearRatio))
+				.withMotionMagic(new MotionMagicConfigs()
+						.withMotionMagicCruiseVelocity(kCruiseVelocity)
+						.withMotionMagicAcceleration(kAcceleration));
 	}
 
 }
