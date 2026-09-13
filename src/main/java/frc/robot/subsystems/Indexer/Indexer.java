@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.hood;
+package frc.robot.subsystems.Indexer;
 
 import static edu.wpi.first.units.Units.Degrees;
 
@@ -15,9 +15,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotConstants;
 
-public class Hood extends SubsystemBase {
+public class Indexer extends SubsystemBase {
 
-	private OverTalonFX m_motor = new OverTalonFX(HoodConstants.motorConfig(), HoodConstants.kMotorID,
+	private OverTalonFX m_motor = new OverTalonFX(IndexerConstants.motorConfig(), IndexerConstants.kMotorID,
 			RobotConstants.rio);
 
 	private MotionMagicVoltage m_motionMagic = new MotionMagicVoltage(Degrees.of(0.0))
@@ -27,7 +27,7 @@ public class Hood extends SubsystemBase {
 	private Angle m_targetAngle = Degrees.of(0.0);
 
 	/** Creates a new Hood. */
-	public Hood() {
+	public Indexer() {
 	}
 
 	public Angle getError() {
@@ -35,17 +35,13 @@ public class Hood extends SubsystemBase {
 	}
 
 	public boolean isAtTarget() {
-		return getError().abs(Degrees) < HoodConstants.kAngleTolerance.in(Degrees);
+		return getError().abs(Degrees) < IndexerConstants.kAngleTolerance.in(Degrees);
 	}
 
 	public Command setAngle(Angle angle) {
 		return run(() -> m_motor.setControl(m_motionMagic.withPosition(angle)))
 				.beforeStarting(() -> m_targetAngle = angle)
 				.until(() -> isAtTarget());
-	}
-
-	public Command setClosedPosition() {
-		return setAngle(HoodConstants.kClosedPosition);
 	}
 
 	public Angle getAngle() {

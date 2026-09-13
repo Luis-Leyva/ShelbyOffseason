@@ -1,4 +1,4 @@
-package frc.robot.subsystems.hood;
+package frc.robot.subsystems.Indexer;
 
 import static edu.wpi.first.units.Units.Degrees;
 
@@ -14,7 +14,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.Angle;
 
-public class HoodConstants {
+public class IndexerConstants {
 
 	// Gear Ratio
 	public static final double kGearRatio = 0.0;

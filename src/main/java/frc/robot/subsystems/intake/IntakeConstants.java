@@ -29,7 +29,14 @@ public class IntakeConstants {
 	// Device IDs
 	public static final int kMotorID = 0;
 	public static final int kEncoderID = 0;
+
+	// Tolerances
 	public static final Angle kAngleTolerance = Degrees.of(0.0);
+
+	// Positions
+	public static final Angle kClosedPosition = Degrees.of(0.0);
+	public static final Angle kOpenPosition = Degrees.of(0.0);
+	public static final Angle kRetractPosition = Degrees.of(0.0);
 
 	// Motor Config
 	public static TalonFXConfiguration motorConfig() {
