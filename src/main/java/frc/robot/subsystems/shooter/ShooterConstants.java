@@ -1,13 +1,16 @@
-package frc.robot.subsystems.Indexer;
+package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-public class IndexerConstants {
+public class ShooterConstants {
 
 	// Device IDs
 	public static final int kMotorID = 0;
@@ -38,7 +41,16 @@ public class IndexerConstants {
 				.withMotorOutput(
 						new MotorOutputConfigs()
 								.withInverted(InvertedValue.CounterClockwise_Positive)
-								.withNeutralMode(NeutralModeValue.Coast));
+								.withNeutralMode(NeutralModeValue.Coast))
+				.withFeedback(new FeedbackConfigs()
+						.withVelocityFilterTimeConstant(0.1))
+				.withSlot0(new Slot0Configs()
+						.withKP(0.0)
+						.withKV(0.0))
+				.withMotionMagic(new MotionMagicConfigs()
+						.withMotionMagicAcceleration(0.0)
+						.withMotionMagicCruiseVelocity(0.0)
+						.withMotionMagicJerk(0.0));
 
 	}
 

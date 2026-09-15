@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Indexer;
+package frc.robot.subsystems.rollers;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -7,18 +7,15 @@ import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-public class IndexerConstants {
+public class RollerConstants {
 
 	// Device IDs
 	public static final int kMotorID = 0;
-	public static final int kMotorID2 = 0;
-	public static final int kMotorID3 = 0;
-	public static final int kMotorID4 = 0;
 
 	// Voltages
 	public static final double kStopVoltage = 0.0;
-	public static final double kPreloadVoltage = 2.0;
-	public static final double kShootVoltage = 6.0;
+	public static final double kIntakinVoltage = 0.0;
+	public static final double kShootVoltage = 0.0;
 
 	// Motor Config
 	public static TalonFXConfiguration motorConfig() {
