@@ -1,5 +1,7 @@
 package frc.robot.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -10,6 +12,8 @@ import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.units.measure.AngularVelocity;
+
 public class ShooterConstants {
 
 	// Device IDs
@@ -18,10 +22,11 @@ public class ShooterConstants {
 	public static final int kMotorID3 = 0;
 	public static final int kMotorID4 = 0;
 
-	// Voltages
-	public static final double kStopVoltage = 0.0;
-	public static final double kPreloadVoltage = 2.0;
-	public static final double kShootVoltage = 6.0;
+	// Speeds
+	public static final AngularVelocity kStopSpeed = RotationsPerSecond.of(0.0);
+
+	// Gear Ratio
+	public static final double kGearRatio = (0.0 / 0.0);
 
 	// Motor Config
 	public static TalonFXConfiguration motorConfig() {
@@ -43,7 +48,8 @@ public class ShooterConstants {
 								.withInverted(InvertedValue.CounterClockwise_Positive)
 								.withNeutralMode(NeutralModeValue.Coast))
 				.withFeedback(new FeedbackConfigs()
-						.withVelocityFilterTimeConstant(0.1))
+						.withVelocityFilterTimeConstant(0.1)
+						.withSensorToMechanismRatio(kGearRatio))
 				.withSlot0(new Slot0Configs()
 						.withKP(0.0)
 						.withKV(0.0))

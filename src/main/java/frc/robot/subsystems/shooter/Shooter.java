@@ -4,9 +4,12 @@
 
 package frc.robot.subsystems.shooter;
 
-import com.ctre.phoenix6.controls.VoltageOut;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.overture.lib.motorcontrollers.OverTalonFX;
 
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,10 +26,10 @@ public class Shooter extends SubsystemBase {
 	private OverTalonFX m_motor4 = new OverTalonFX(ShooterConstants.motorConfig(), ShooterConstants.kMotorID4,
 			RobotConstants.rio);
 
-	private VoltageOut m_voltageOut = new VoltageOut(0.0)
+	private MotionMagicVelocityVoltage m_velocityOut = new MotionMagicVelocityVoltage(0.0)
 			.withEnableFOC(true);
 
-	private double m_targetVoltage = 0.0;
+	private AngularVelocity m_targetVelocity = RotationsPerSecond.of(0.0);
 
 	/** Creates a new Hood. */
 	public Shooter() {
@@ -35,14 +38,14 @@ public class Shooter extends SubsystemBase {
 		m_motor4.setFollow(ShooterConstants.kMotorID, false);
 	}
 
-	public Command setSpeed(double voltage) {
-		return run(() -> m_motor.setControl(m_voltageOut.withOutput(m_targetVoltage)))
-				.beforeStarting(() -> m_targetVoltage = voltage);
+	public Command setSpeed(AngularVelocity velocity) {
+		return run(() -> m_motor.setControl(m_velocityOut.withVelocity(m_targetVelocity)))
+				.beforeStarting(() -> m_targetVelocity = velocity);
 	}
 
 	public void updateTelemetry() {
-		SmartDashboard.putNumber("Indexer/TargetVoltage", m_targetVoltage);
-		SmartDashboard.putNumber("Indexer/MotorVoltage", m_motor.getMotorVoltage().getValueAsDouble());
+		SmartDashboard.putNumber("Shooter/TargetVelocity", m_targetVelocity.magnitude());
+		SmartDashboard.putNumber("Shooter/MotorVoltage", m_motor.getVelocity().getValueAsDouble());
 	}
 
 	@Override
